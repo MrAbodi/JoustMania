@@ -10,6 +10,7 @@ import ninja
 import swapper
 import speed_bomb
 import random
+import kingofthehill
 from piaudio import Audio
 from enum import Enum
 from multiprocessing import Process, Value, Array
@@ -18,7 +19,7 @@ TEAM_NUM = 6
 TEAM_COLORS = common.generate_colors(TEAM_NUM)
 
 #the number of game modes
-GAME_MODES = 9
+GAME_MODES = 10
 
 SENSITIVITY_MODES = 3
 
@@ -160,6 +161,14 @@ def track_move(serial, move_num, move_opts, force_color, battery):
                     else:
                         move.set_leds(200,200,200)
 
+                elif game_mode == common.Games.KingoftheHill.value:
+                    if random_color > 0.5:
+                        move.set_leds(150,0,0)
+                    else:
+                        move.set_leds(0,0,150)
+                    random_color += 0.002
+                    if random_color >= 1:
+                        random_color = 0
 
                 elif game_mode == common.Games.Random.value:
                     
@@ -310,7 +319,9 @@ class Menu():
             Audio('audio/Menu/menu Commander.wav').start_effect()
         if self.game_mode == common.Games.Swapper.value:
             Audio('audio/Menu/menu Swapper.wav').start_effect()
-        if self.game_mode == common.Games.Ninja.value:
+        if self.game_mode == common.Games.KingoftheHill.value:
+            Audio('audio/Menu/menu KingoftheHill.wav').start_effect()
+            if self.game_mode == common.Games.Ninja.value:
             Audio('audio/Menu/menu ninjabomb.wav').start_effect()
         if self.game_mode == common.Games.Random.value:
             Audio('audio/Menu/menu Random.wav').start_effect()
@@ -458,7 +469,9 @@ class Menu():
         if self.game_mode == common.Games.Swapper.value:
             Audio('audio/Menu/Swapper-instructions.wav').start_effect()
             time.sleep(14)
-
+        if self.game_mode == common.Games.KingoftheHill.value:
+            Audio('audio/Menu/KingoftheHill-instructions.wav').start_effect()
+            time.sleep(14)
 
     def start_game(self, random_mode=False):
         self.enable_bt_scanning(False)
@@ -500,6 +513,9 @@ class Menu():
             self.tracked_moves = {}
         elif self.game_mode == common.Games.Swapper.value:
             swapper.Swapper(game_moves, self.sensitivity)
+            self.tracked_moves = {}
+        elif self.game_mode == common.Games.KingoftheHill.value:
+            kingofthehill.KingoftheHill(game_moves, self.sensitivity)
             self.tracked_moves = {}
         else:
             #may need to put in moves that have selected to not be in the game
