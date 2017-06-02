@@ -180,7 +180,7 @@ def track_move(move_serial, move_num, team, team_num, dead_move, force_color, mu
                 team.value = (team.value + 1) % team_num
             
 
-class Swapper():
+class kingoftheHill():
     def __init__(self, moves, speed):
         global SLOW_MAX
         global SLOW_WARNING
